@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PostController;
+use Symfony\Component\Routing\Loader\Configurator\Traits\PrefixTrait;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +24,7 @@ Route::get('/demo3', [DemoController::class, 'index3']);
 Route::get('/demo4/{id}', [DemoController::class, 'index4']);
 Route::get('/demo5/{id?}', [DemoController::class, 'index5']);
 Route::get('/demo6/{parram1}/{parram2}', [DemoController::class, 'index6']);
+
 
 
 //Buoi2 Lab3 tiep theo bo sung
@@ -43,3 +45,9 @@ Route::get('/admin/dashboard', function () {
 
 Route::get('/test1', [ProductController::class, 'test1']);
 Route::get('/test2', [ProductController::class, 'test2']);
+
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.home');
+});
