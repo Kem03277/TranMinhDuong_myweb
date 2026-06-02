@@ -27,11 +27,9 @@ return new class extends Migration
             // khóa ngoại với bảng brands
             $table->foreignId('brandid')
                 ->nullable()
-                ->type('integer')
-                ->unsigned()
-                ->constrained('brands', 'brandid')
+                ->constrained('brands')
                 ->nullOnDelete();
-            // khóa ngoại với bảng categories
+            // khóa ngoại với bảng categories 
             $table->unsignedInteger('cateid');
             $table->foreign('cateid')
                 ->references('cateid')

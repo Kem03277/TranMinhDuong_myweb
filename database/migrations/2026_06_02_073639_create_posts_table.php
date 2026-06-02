@@ -12,16 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('title', 200);
             $table->string('slug', 255)->unique();
             $table->text('content');
             $table->string('image', 200);
             $table->tinyInteger('status')->default(1);
-            $table->unsignedInteger('userid');
-            $table->foreign('userid')
-                ->references('userid')
-                ->on('users')
+            $table->foreignId('user_id')
+                ->constrained('users')
                 ->restrictOnDelete();
 
             $table->timestamps();

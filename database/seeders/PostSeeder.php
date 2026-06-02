@@ -23,7 +23,7 @@ class PostSeeder extends Seeder
                 'content' => fake()->paragraphs(rand(2, 5), true),
                 'image' => 'post-' . rand(1, 10) . '.jpg',
                 'status' => rand(0, 1),
-                'userid' => rand(1, 10),
+                'user_id' => rand(1, 10),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
