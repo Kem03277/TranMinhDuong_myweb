@@ -20,7 +20,7 @@ class BrandSeeder extends Seeder
                 'brandname'   => ucfirst($name),
                 'slug'        => Str::slug($name),
                 'image'       => fake()->imageUrl(),
-                'status' => fake()->numberBetween(0, 1),
+                'status'      => fake()->numberBetween(0, 1),
                 'sort_order'  => $i,
                 'description' => fake()->sentence(30),
                 'created_at'  => now(),

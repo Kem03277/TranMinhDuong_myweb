@@ -13,7 +13,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return "Danh sach san pham";
+        $list = DB::table('categories')
+            ->select('cateid', 'catename', 'slug', 'image')
+            ->where('status', 1)
+            ->orderBy('catename')
+            ->get();
+        return view('admin.categories.index', ['list' => $list]);
     }
 
     /**

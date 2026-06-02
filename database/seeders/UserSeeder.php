@@ -15,7 +15,6 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         for ($i = 1; $i <= 10; $i++) {
-
             DB::table('users')->insert([
                 'fullname' => fake()->name(),
                 'username' => fake()->unique()->userName(),

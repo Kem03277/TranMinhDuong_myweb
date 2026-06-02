@@ -51,3 +51,8 @@ Route::prefix('admin')->group(function () {
         return view('admin.dashboard');
     })->name('admin.home');
 });
+
+Route::prefix('admin')->name('admin.')->group(function () {
+
+    Route::resource('categories', CategoryController::class);
+});
