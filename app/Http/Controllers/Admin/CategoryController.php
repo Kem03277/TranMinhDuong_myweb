@@ -14,7 +14,7 @@ class CategoryController extends Controller
     public function index()
     {
         $list = DB::table('categories')
-            ->select('cateid', 'catename', 'slug', 'image')
+            ->select('cateid', 'catename', 'slug', 'image', 'status')
             ->where('status', 1)
             ->orderBy('catename')
             ->get();
@@ -26,7 +26,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return "Form tao san pham moi";
+        return view('admin.categories.create');
     }
 
     /**
@@ -34,7 +34,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        return "Luu san pham/danh muc moi";
+        DB::table('categories')->insert([
+            'catename' => $request->catename,
+            'slug' => $request->slug
+        ]);
+
+        return redirect()->route('admin.categories.index');
     }
 
     /**
@@ -66,6 +71,8 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        return "Xoa san pham";
+        DB::table('categories')->where('cateid', $id)->delete();
+
+        return redirect()->route('admin.categories.index');
     }
 }

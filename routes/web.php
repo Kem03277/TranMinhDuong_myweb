@@ -28,11 +28,6 @@ Route::get('/demo6/{parram1}/{parram2}', [DemoController::class, 'index6']);
 
 
 //Buoi2 Lab3 tiep theo bo sung
-Route::resource('admin/category', CategoryController::class);
-Route::resource('admin/brand', BrandController::class);
-Route::resource('admin/user', UserController::class);
-Route::resource('admin/product', ProductController::class);
-Route::resource('admin/post', PostController::class);
 
 //Lab 4
 Route::get('admin/dashboard', function () {
@@ -46,13 +41,16 @@ Route::get('/admin/dashboard', function () {
 Route::get('/test1', [ProductController::class, 'test1']);
 Route::get('/test2', [ProductController::class, 'test2']);
 
-Route::prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.home');
-});
+// Route::prefix('admin')->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('admin.dashboard');
+//     })->name('admin.home');
+// });
 
 Route::prefix('admin')->name('admin.')->group(function () {
-
     Route::resource('categories', CategoryController::class);
+    Route::resource('brands', BrandController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('posts', PostController::class);
 });
