@@ -17,8 +17,8 @@ class CategorySeeder extends Seeder
 
             $name = fake()->words(2, true);
 
-            DB::table('brands')->insert([
-                'brandname' => ucfirst($name),
+            DB::table('categories')->insert([
+                'catename' => ucfirst($name),
                 'slug' => Str::slug($name),
                 'image' => fake()->imageUrl(),
                 'status' => fake()->numberBetween(0, 1),
