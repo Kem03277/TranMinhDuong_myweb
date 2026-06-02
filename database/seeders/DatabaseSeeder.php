@@ -15,9 +15,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            // Các Seeder không có khóa ngoại
             CategorySeeder::class,
             BrandSeeder::class,
             UserSeeder::class,
+
+            // Các Seeder có khóa ngoại
+            ProductSeeder::class,
+            PostSeeder::class,
         ]);
 
         // DB::table('users')->insert([
