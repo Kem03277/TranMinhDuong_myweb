@@ -3,6 +3,7 @@
 @section('title', 'Loại Sản phẩm')
 
 @section('content')
+
     <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
 
     <a href="{{ route('admin.categories.create') }}" class="btn btn-success mb-3">
@@ -42,13 +43,18 @@
                         @endif
                     </td>
                     <td>
-                        <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Xóa
-                            </button>
-                        </form>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('admin.categories.edit', $item->cateid) }}" class="btn btn-warning btn-sm">
+                                Sửa
+                            </a>
+                            <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" class="m-0">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Xóa
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach

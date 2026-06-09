@@ -18,7 +18,7 @@ class CategoryController extends Controller
             ->where('status', 1)
             ->orderBy('catename')
             ->get();
-        return view('admin.categories.index', ['list' => $list]);
+        return view('admin.categories.index', compact('list'));
     }
 
     /**
@@ -55,7 +55,8 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        return "Form chinh sua san pham";
+        $category = DB::table('categories')->where('cateid', $id)->first();
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -63,7 +64,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return "Cap nhat san pham";
+        DB::table('categories')->where('cateid', $id)->update([
+            'catename' => $request->catename,
+            'slug' => $request->slug
+        ]);
+
+        return redirect()->route('admin.categories.index');
     }
 
     /**
