@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+<<<<<<< HEAD
+=======
+use App\Models\Brand;
+>>>>>>> e5ee8c7 (add lab7)
 
 class BrandController extends Controller
 {
@@ -34,7 +38,7 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        return "Luu thuong hieu moi";
+
     }
 
     /**
