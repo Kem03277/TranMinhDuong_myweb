@@ -26,7 +26,7 @@
                     </td>
 
                     <td>{{ $item->title }}</td>
-                    <td>{{ $item->fullname }}</td>
+                    <td>{{ $item->user->fullname }}</td>
                     <td>
                         @if($item->status == 1)
                             <span class="badge bg-success">Xuất bản</span>
@@ -38,4 +38,8 @@
             @endforeach
         </tbody>
     </table>
+    {{-- Hien thi phan trang --}}
+    <div class="d-flex justify-content-center">
+        {{ $list->links() }}
+    </div>
 @endsection

@@ -60,4 +60,8 @@
             @endforeach
         </tbody>
     </table>
+    {{-- Hien thi phan trang --}}
+    <div class="d-flex justify-content-center">
+        {{ $list->links() }}
+    </div>
 @endsection

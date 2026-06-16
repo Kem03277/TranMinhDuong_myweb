@@ -4,25 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-<<<<<<< HEAD
-=======
 use App\Models\Brand;
->>>>>>> e5ee8c7 (add lab7)
 
 class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($limit = 10)
     {
-        $list = DB::table('brands')
-            ->select('id', 'brandname', 'slug', 'image', 'status', 'sort_order')
+        // Query Builder
+        // $list = DB::table('brands')
+        //     ->select('id', 'brandname', 'slug', 'image', 'status', 'sort_order')
+        //     ->where('status', 1)
+        //     ->orderBy('brandname')
+        //     ->get();
+        // return view('admin.brands.index', compact('list'));
+
+        // Eloquent ORM
+        $list = Brand::select('id', 'brandname', 'slug', 'image', 'status', 'sort_order')
             ->where('status', 1)
             ->orderBy('brandname')
-            ->get();
-        return view('admin.brands.index', ['list' => $list]);
+            ->paginate($limit);
+        return view('admin.brands.index', compact('list'));
     }
 
     /**
@@ -36,10 +40,7 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.

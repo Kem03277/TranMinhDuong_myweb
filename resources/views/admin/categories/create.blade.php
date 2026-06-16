@@ -18,6 +18,13 @@
             <input type="text" name="slug" class="form-control">
         </div>
 
-        <button type="submit" class="btn btn-primary">Lưu</button>
+        <div class="mb-3">
+            <label>Trạng thái</label>
+            <select name="status" class="form-control">
+                <option value="1">Hiển thị</option>
+                <option value="0">Ẩn</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
     </form>
 @endsection

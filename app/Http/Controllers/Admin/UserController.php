@@ -4,25 +4,33 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($limit = 10)
     {
-        $list = DB::table('users')
-            ->select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status')
+        // Query Builder
+        // $list = DB::table('users')
+        //     ->select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status')
+        //     ->where('status', 1)
+        //     ->orderBy('fullname')
+        //     ->get();
+        // return view('admin.users.index', compact('list'));
+
+        // Eloquent ORM
+        $list = User::select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status')
             ->where('status', 1)
             ->orderBy('fullname')
-            ->get();
-        return view('admin.users.index', ['list' => $list]);
+            ->paginate($limit);
+        return view('admin.users.index', compact('list'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource.j
      */
     public function create()
     {
