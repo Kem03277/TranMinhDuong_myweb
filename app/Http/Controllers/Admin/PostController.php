@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 
 class PostController extends Controller
 {
@@ -13,7 +14,7 @@ class PostController extends Controller
      */
     public function index($limit = 10)
     {
-        // Query Builder (với JOIN)
+        // Query Builder
         // $list = DB::table('posts')
         //     ->join('users', 'posts.user_id', '=', 'users.id')
         //     ->select(
@@ -41,7 +42,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return "Form tao bai viet moi";
+        $users = User::select('id', 'fullname')->get();
+
+        return view('admin.posts.create', compact('users'));
     }
 
     /**
@@ -49,7 +52,23 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        return "Luu bai viet moi";
+        try {
+            Post::create([
+                'title' => $request->title,
+                'slug' => $request->slug,
+                'content' => $request->input('content'),
+                'status' => $request->status,
+                'user_id' => $request->user_id,
+                'image' => null
+            ]);
+            return redirect()
+                ->route('admin.posts.index')
+                ->with('success', 'Thêm bài viết thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -65,7 +84,9 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        return "Form chinh sua bai viet";
+        $post = Post::find($id);
+        $users = User::select('id', 'fullname')->get();
+        return view('admin.posts.edit', compact('post', 'users'));
     }
 
     /**
@@ -73,7 +94,31 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return "Cap nhat bai viet";
+        try {
+            $post = Post::find($id);
+
+            if (!$post) {
+                return redirect()
+                    ->route('admin.posts.index')
+                    ->with('error', 'Bài viết không tồn tại');
+            }
+
+            $post->update([
+                'title' => $request->title,
+                'slug' => $request->slug,
+                'content' => $request->input('content'),
+                'status' => $request->status,
+                'user_id' => $request->user_id
+            ]);
+
+            return redirect()
+                ->route('admin.posts.index')
+                ->with('success', 'Cập nhật bài viết thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**

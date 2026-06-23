@@ -6,12 +6,17 @@
 
     <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
 
-    <a href="{{ route('admin.categories.create') }}" class="btn btn-success mb-3">
-        + Thêm mới
+    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary mb-2">
+        <i class="bi bi-plus-circle"></i>
+        Thêm mới
     </a>
-
-    <table class="table table-bordered table-hover table-striped">
-        <thead class="table-dark">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    <table class="table table-bordered table-hover">
+        <thead>
             <tr>
                 <th>STT</th>
                 <th>Hình ảnh</th>
@@ -19,13 +24,13 @@
                 <th>Tên loại</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
-                <th>Chức năng</th>
+                <th width="120">Thao tác</th>
             </tr>
         </thead>
         <tbody>
             @foreach($list as $item)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $list->firstItem() + $loop->index }}</td>
 
                     <td>
                         <img src="{{ asset($item->image ? 'images/categories/' . $item->image : 'images/default.png') }}"
@@ -43,18 +48,17 @@
                         @endif
                     </td>
                     <td>
-                        <div class="d-flex gap-2">
-                            <a href="{{ route('admin.categories.edit', $item->cateid) }}" class="btn btn-warning btn-sm">
-                                Sửa
-                            </a>
-                            <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" class="m-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Xóa
-                                </button>
-                            </form>
-                        </div>
+                        <a href="{{ route('admin.categories.edit', $item->cateid) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

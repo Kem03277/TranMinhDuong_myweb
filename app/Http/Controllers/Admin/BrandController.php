@@ -23,7 +23,6 @@ class BrandController extends Controller
 
         // Eloquent ORM
         $list = Brand::select('id', 'brandname', 'slug', 'image', 'status', 'sort_order')
-            ->where('status', 1)
             ->orderBy('brandname')
             ->paginate($limit);
         return view('admin.brands.index', compact('list'));
@@ -34,13 +33,34 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return "Form tao thuong hieu moi";
+        $brands = Brand::select('id', 'brandname')->get();
+
+        return view('admin.brands.create', compact('brands'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(Request $request)
+    {
+        try {
+            Brand::create([
+                'brandname' => $request->brandname,
+                'slug' => $request->slug,
+                'status' => $request->status,
+                'sort_order' => $request->sort_order ?? 0,
+                'description' => $request->description
+            ]);
+            return redirect()
+                ->route('admin.brands.index')
+                ->with('success', 'Thêm thương hiệu thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
+    }
+
 
     /**
      * Display the specified resource.
@@ -55,7 +75,10 @@ class BrandController extends Controller
      */
     public function edit(string $id)
     {
-        return "Form chinh sua thuong hieu";
+        $brand = Brand::find($id);
+        $brands = Brand::select('id', 'brandname')->get();
+
+        return view('admin.brands.edit', compact('brand', 'brands'));
     }
 
     /**
@@ -63,7 +86,30 @@ class BrandController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return "Cap nhat thuong hieu";
+        try {
+            $brand = Brand::find($id);
+
+            if (!$brand) {
+                return redirect()
+                    ->route('admin.brands.index')
+                    ->with('error', 'Thương hiệu không tồn tại');
+            }
+            // Thực hiện cập nhật thương hiệu
+            $brand->update([
+                'brandname' => $request->brandname,
+                'slug' => $request->slug,
+                'status' => $request->status,
+                'sort_order' => $request->sort_order ?? 0,
+                'description' => $request->description
+            ]);
+            return redirect()
+                ->route('admin.brands.index')
+                ->with('success', 'Cập nhật thương hiệu thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**

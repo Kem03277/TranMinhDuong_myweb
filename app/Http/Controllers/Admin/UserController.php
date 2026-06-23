@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,7 +24,6 @@ class UserController extends Controller
 
         // Eloquent ORM
         $list = User::select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status')
-            ->where('status', 1)
             ->orderBy('fullname')
             ->paginate($limit);
         return view('admin.users.index', compact('list'));
@@ -34,7 +34,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        return "Form tao nguoi dung moi";
+        $users = User::select('id', 'fullname')->get();
+
+        return view('admin.users.create', compact('users'));
     }
 
     /**
@@ -42,7 +44,27 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        return "Luu nguoi dung moi";
+        try {
+            User::create([
+                'fullname' => $request->fullname,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'gender' => $request->gender,
+                'birthday' => $request->birthday,
+                'role' => $request->role ?? '2',
+                'status' => $request->status
+            ]);
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'Thêm người dùng thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -58,7 +80,8 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        return "Form chinh sua nguoi dung";
+        $user = User::find($id);
+        return view('admin.users.edit', compact('user'));
     }
 
     /**
@@ -66,7 +89,42 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return "Cap nhat nguoi dung";
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return redirect()
+                    ->route('admin.users.index')
+                    ->with('error', 'Người dùng không tồn tại');
+            }
+
+            $user->update([
+                'fullname' => $request->fullname,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'gender' => $request->gender,
+                'birthday' => $request->birthday,
+                'role' => $request->role,
+                'status' => $request->status
+            ]);
+
+
+            // Để trống mật khẩu ➜ giữ nguyên mật khẩu cũ.
+            // Nhập mật khẩu mới ➜ cập nhật mật khẩu mới đã được mã hóa.
+            if (!empty($request->password)) {
+                $user['password'] = Hash::make($request->password);
+            }
+
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'Cập nhật người dùng thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**

@@ -35,7 +35,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.create');
+        $categories = Category::select('cateid', 'catename')->get();
+
+        return view('admin.categories.create', compact('categories'));
     }
 
     /**
@@ -43,19 +45,26 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+
         // DB::table('categories')->insert([
         //     'catename' => $request->catename,
         //     'slug' => $request->slug
-        // ]);
-
-        // Eloquent ORM
-        Category::create([
-            'catename' => $request->catename,
-            'slug' => $request->slug,
-            'status' => $request->status
-        ]);
-
-        return redirect()->route('admin.categories.index');
+        // ]);s
+        try {
+            Category::create([
+                'catename' => $request->catename,
+                'slug' => $request->slug,
+                'status' => $request->status,
+                'description' => $request->description
+            ]);
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Thêm danh mục thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -71,8 +80,14 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = DB::table('categories')->where('cateid', $id)->first();
-        return view('admin.categories.edit', compact('category'));
+
+        //  $category = DB::table('categories')->where('cateid', $id)->first();
+        //  return view('admin.categories.edit', compact('category'));
+
+        $category = Category::find($id);
+        $categories = Category::select('cateid', 'catename')->get();
+
+        return view('admin.categories.edit', compact('category', 'categories'));
     }
 
     /**
@@ -80,12 +95,38 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        DB::table('categories')->where('cateid', $id)->update([
-            'catename' => $request->catename,
-            'slug' => $request->slug
-        ]);
 
-        return redirect()->route('admin.categories.index');
+        // DB::table('categories')->where('cateid', $id)->update([
+        //     'catename' => $request->catename,
+        //     'slug' => $request->slug
+        // ]);
+
+        // return redirect()->route('admin.categories.index');
+
+        try {
+            $category = Category::find($id);
+
+            if (!$category) {
+                return redirect()
+                    ->route('admin.categories.index')
+                    ->with('error', 'Danh mục không tồn tại');
+            }
+
+            $category->update([
+                'catename' => $request->catename,
+                'slug' => $request->slug,
+                'status' => $request->status,
+                'description' => $request->description
+            ]);
+
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Cập nhật danh mục thành công');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -93,8 +134,8 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        DB::table('categories')->where('cateid', $id)->delete();
+        //  DB::table('categories')->where('cateid', $id)->delete();
 
-        return redirect()->route('admin.categories.index');
+        // return redirect()->route('admin.categories.index');
     }
 }
