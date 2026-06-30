@@ -2,14 +2,11 @@
 @section('title', 'Chỉnh Sửa Sản Phẩm')
 
 @section('content')
-    <div class="border rounded bg-white p-4 shadow-sm">
+   <div class="border rounded bg-white p-4 shadow-sm">
         <h3 class="mb-4">Chỉnh sửa sản phẩm</h3>
-        {{-- Hiển thị lỗi từ session flash --}}
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
+
+            {{-- gọi component --}}
+            <x-admin.alert />
 
         <form action="{{ route('admin.products.update', $product->id) }}" method="POST">
             @method('PUT')
@@ -21,11 +18,24 @@
                     <input type="text" name="productname" class="form-control" 
                             value="{{ old('productname', $product->productname) }}"
                         required>
+                         {{-- hiển thị lỗi cho trường productname --}}
+                        @error('productname')
+                            <span class="text-danger">
+                                {{ $message }}
+                            </span>
+                        @enderror
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label">Slug</label>
                     <input type="text" name="slug" class="form-control" 
                             value="{{ old('slug', $product->slug) }}" required>
+                         {{-- hiển thị lỗi cho trường slug --}}
+                        @error('slug')
+                            <span class="text-danger">
+                                {{ $message }}
+                            </span>
+                        @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Loại sản phẩm</label>
@@ -37,6 +47,12 @@
                                 {{ $category->catename }}
                             </option>
                         @endforeach
+                        {{--hiển thị lỗi cho trường cateid --}}
+                        @error('cateid')
+                            <span class="text-danger">
+                                {{ $message }}
+                            </span>
+                        @enderror
                     </select>
                 </div>
                 <div class="mb-3">
@@ -49,6 +65,12 @@
                                 {{ $brand->brandname }}
                             </option>
                         @endforeach
+                        {{-- hiển thị lỗi cho trường brandid --}}
+                        @error('brandid')
+                            <span class="text-danger">
+                                {{ $message }}
+                            </span>
+                        @enderror
                     </select>
                 </div>
             </div>
@@ -57,11 +79,23 @@
                     <label class="form-label">Giá</label>
                     <input type="number" name="price" class="form-control" 
                     value="{{ old('price', $product->price) }}" required>
+                    {{-- hiển thị lỗi cho trường price --}}
+                    @error('price')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Giá khuyến mãi</label>
                     <input type="number" name="pricediscount" class="form-control" 
                     value="{{ old('pricediscount', $product->pricediscount) }}">
+                    {{-- hiển thị lỗi cho trường pricediscount --}}
+                    @error('pricediscount')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label d-block">Trạng thái</label>
@@ -70,16 +104,34 @@
                     <label class="btn btn-outline-success" for="active">
                         Hiển thị
                     </label>
+                    {{-- hiển thị lỗi cho trường status --}}
+                    @error('status')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                     <input type="radio" class="btn-check" name="status" id="inactive" value="0" 
                     {{ old('status', $product->status) == 0 ? 'checked' : '' }}>
                     <label class="btn btn-outline-danger" for="inactive">
                         Ẩn
                     </label>
+                    {{-- hiển thị lỗi cho trường status --}}
+                    @error('status')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Mô tả sản phẩm</label>
                     <textarea name="description" rows="4" class="form-control">{{ old('description', $product->description) }}</textarea>
                 </div>
+                {{-- hiển thị lỗi cho trường description --}}
+                    @error('description')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
             </div>
         </div>
             <button type="submit" class="btn btn-primary">

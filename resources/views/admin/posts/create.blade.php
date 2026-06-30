@@ -3,13 +3,10 @@
 
 @section('content')
 <div class="border rounded bg-white p-4 shadow-sm">
-    <h3 class="mb-4">Thêm bài viết mới</h3>
-    {{-- Hiển thị lỗi từ session flash --}}
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+    <h3 class="mb-4">Thêm loại sản phẩm</h3>
+
+    {{-- gọi component --}}
+    <x-admin.alert />
 
     <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -18,10 +15,22 @@
                 <div class="mb-3">
                     <label class="form-label">Tiêu đề bài viết</label>
                     <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
+                    {{-- hiển thị lỗi cho trường title --}}
+                    @error('title')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Slug</label>
                     <input type="text" name="slug" class="form-control" value="{{ old('slug') }}" required>
+                    {{-- hiển thị lỗi cho trường slug --}}
+                    @error('slug')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label d-block">Trạng thái</label>
@@ -30,11 +39,23 @@
                     <label class="btn btn-outline-success" for="active">
                         Hiển thị
                     </label>
+                    {{-- hiển thị lỗi cho trường status --}}
+                    @error('status')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                     <input type="radio" class="btn-check" name="status" id="inactive" value="0" 
                     {{ old('status', 0) == 0 ? 'checked' : '' }}>
                     <label class="btn btn-outline-danger" for="inactive">
                         Ẩn
                     </label>
+                    {{-- hiển thị lỗi cho trường status --}}
+                    @error('status')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Người viết</label>
@@ -47,6 +68,12 @@
                             </option>
                         @endforeach
                     </select>
+                    {{-- hiển thị lỗi cho trường user_id --}}
+                    @error('user_id')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="col-md-6">
@@ -55,6 +82,12 @@
                     <textarea name="content" rows="10" class="form-control" required>{{ old('content') }}</textarea>
                 </div>
             </div>
+            {{-- hiển thị lỗi cho trường content --}}
+            @error('content')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
         </div>
         <button type="submit" class="btn btn-primary">
             Lưu bài viết

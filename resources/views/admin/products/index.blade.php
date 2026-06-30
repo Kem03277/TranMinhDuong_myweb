@@ -31,7 +31,7 @@
                     <td>{{ $list->firstItem() + $loop->index }}</td>
                     <td>{{ $item->productname }}</td>
                     <td>{{ $item->category->catename }}</td>
-                    <td>{{ $item->brand->brandname }}</td>
+                    <td>{{ $item->brand?->brandname }}</td>
                     <td>{{ number_format($item->price, 0) }} đ</td>
                     <td>
                         @if($item->status)
