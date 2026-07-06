@@ -9,7 +9,7 @@
         {{-- gọi component --}}
         <x-admin.alert />
 
-        <form action="{{ route('admin.brands.store') }}" method="POST">
+        <form action="{{ route('admin.brands.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-3">
@@ -28,6 +28,18 @@
                 <input type="text" name="slug" class="form-control" value="{{ old('slug') }}" required>
                 {{-- hiển thị lỗi cho trường slug --}}
                 @error('slug')
+                    <span class="text-danger">
+                        {{ $message }}
+                    </span>
+                @enderror
+            </div>
+
+            <div class="mb-3 img-group">
+                <label class="form-label">Hình ảnh</label>
+                <input type="file" name="img" class="form-control img-input">
+                <div class="img-preview mt-2"></div>
+                {{-- hiển thị lỗi cho trường img --}}
+                @error('img')
                     <span class="text-danger">
                         {{ $message }}
                     </span>
@@ -56,8 +68,8 @@
             <div class="mb-3">
                 <label class="form-label">Mô tả thương hiệu</label>
                 <textarea name="description" rows="4" class="form-control">
-                                                        {{ old('description') }}
-                                                    </textarea>
+                                                                                                                    {{ old('description') }}
+                                                                                                                </textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Lưu</button>

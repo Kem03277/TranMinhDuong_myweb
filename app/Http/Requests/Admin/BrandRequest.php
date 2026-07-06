@@ -23,7 +23,7 @@ class BrandRequest extends FormRequest
      */
     public function rules(): array
     {
-        // lấy giá trị tham số brand thay vì id (vì route dùng Route::resource() mặc định model là brand
+        // lấy giá trị tham số brand thay vì id (vì route dùng Route::resource() mặc định model là bran
         $id = $this->route('brand');
         return [
             'brandname' => [
@@ -40,6 +40,12 @@ class BrandRequest extends FormRequest
                     ->ignore($id, 'id'),
                 'regex:/^[a-z0-9-]+$/',
             ],
+            'img' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
             'status' => 'required|in:0,1',
         ];
     }
@@ -53,6 +59,10 @@ class BrandRequest extends FormRequest
             'unique' => ':attribute đã tồn tại.',
             'slug.regex' => ':attribute chỉ được chứa chữ thường, số và dấu gạch ngang (-).',
             'status.in' => ':attribute không hợp lệ.',
+
+            'img.image' => ':attribute phải là hình ảnh.',
+            'img.mimes' => ':attribute chỉ chấp nhận các định dạng: jpg, jpeg, png, webp.',
+            'img.max'   => ':attribute không được vượt quá 200 KB.'
         ];
     }
 
@@ -61,6 +71,7 @@ class BrandRequest extends FormRequest
         return [
             'brandname' => 'Tên thương hiệu',
             'slug' => 'Đường dẫn (Slug)',
+            'img' => 'Hình ảnh',
             'status' => 'Trạng thái',
         ];
     }

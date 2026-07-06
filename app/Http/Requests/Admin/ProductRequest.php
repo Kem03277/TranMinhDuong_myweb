@@ -41,6 +41,25 @@ class ProductRequest extends FormRequest
                 Rule::unique('products', 'slug')->ignore($id, 'id'),
                 'regex:/^[a-z0-9_-]+$/',
             ],
+            'img' => [
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
+
+            // mảng
+            'imgs' => [
+                'nullable',
+                'array',
+            ],
+            // từng phần tử trong file
+            'imgs.*' => [
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
+
             'price' => [
                 'required',
                 'numeric',
@@ -70,6 +89,12 @@ class ProductRequest extends FormRequest
             'unique' => ':attribute đã tồn tại.',
             'numeric' => ':attribute phải là số.',
             'slug.regex' => ':attribute chỉ được chứa chữ thường, số, dấu gạch ngang (-) và dấu gạch dưới (_).',
+
+            'image' => ':attribute phải là hình ảnh.',
+            'mimes' => ':attribute chỉ chấp nhận các định dạng: jpg, jpeg, png, webp.',
+            'image.max' => ':attribute không được vượt quá 200 KB.',
+            'images.*.max' => ':attribute không được vượt quá 200 KB.',
+
             'price.min' => ':attribute phải lớn hơn hoặc bằng 0.',
             'price.max' => ':attribute phải nhỏ hơn 10.000.000.',
             'pricediscount.numeric' => ':attribute phải là số.',

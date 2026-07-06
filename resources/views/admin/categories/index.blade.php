@@ -33,8 +33,9 @@
                     <td>{{ $list->firstItem() + $loop->index }}</td>
 
                     <td>
-                        <img src="{{ asset($item->image ? 'images/categories/' . $item->image : 'images/default.png') }}"
-                            alt="{{ $item->catename }}" style="width: 50px; height: 50px; object-fit: cover;">
+                        @if ($item->image)
+                            <img src="{{ asset('storage/categories/' . $item->image) }}" width="80" class="img-thumbnail">
+                        @endif
                     </td>
 
                     <td>{{ $item->cateid }}</td>

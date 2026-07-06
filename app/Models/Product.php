@@ -36,4 +36,10 @@ class Product extends Model
         // products.brandid = brands.id
         return $this->belongsTo(Brand::class, 'brandid', 'id');
     }
+
+    // Cấu hình Quan hệ với ProductImage
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id', 'id');
+    }
 }
