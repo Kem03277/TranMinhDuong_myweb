@@ -1,3 +1,10 @@
+{{-- Hiển thị thành công từ session flash --}}
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 {{-- Hiển thị tất cả lỗi Validation --}}
 @if ($errors->any())
     <div class="alert alert-danger">

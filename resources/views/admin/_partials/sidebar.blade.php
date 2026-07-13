@@ -6,7 +6,7 @@
     <ul class="nav flex-column">
         {{-- Cách 1: Dùng Route Name --}}
         <li class="nav-item">
-            <a class="nav-link text-white" href="{{ route('admin.home') }}">
+            <a class="nav-link text-white" href="{{ route('admin.dashboard') }}">
                 <i class="bi bi-house-door"></i>
                 Dashboard
             </a>
@@ -15,6 +15,11 @@
         <li class="nav-item">
             <a class="nav-link text-white" href="/admin/dashboard">
                 <i class="bi bi-house-door"></i> Dashboard***
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ route('admin.change-password') }}">
+                <i class="bi bi-key"></i> Đổi mật khẩu
             </a>
         </li>
         {{-- Menu expand --}}
