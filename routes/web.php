@@ -5,18 +5,39 @@ use App\Http\Controllers\DemoController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('category');
+Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('brand');
+Route::get('/products/{slug}', [ClientProductController::class, 'show'])->name('show');
+
+Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
+
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::post('/update', [CartController::class, 'update'])->name('update');
+    Route::post('/remove', [CartController::class, 'remove'])->name('remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [CartController::class, 'storeOrder'])->name('store');
 });
 
 Route::get('/test', function () {
     return "Test";
 });
+
 
 
 Route::get('/demo', [DemoController::class, 'index']);
@@ -128,6 +149,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::resource('users', UserController::class);
                 Route::resource('products', ProductController::class);
                 Route::resource('posts', PostController::class);
+                Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
             }
         );
         Route::resource('products', ProductController::class)
