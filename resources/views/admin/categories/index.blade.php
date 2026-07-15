@@ -58,17 +58,20 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('admin.categories.edit', $item->cateid) }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Bạn có chắc muốn xóa?')">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
+                        <div class="action-buttons">
+                            <a href="{{ route('admin.categories.edit', $item->cateid) }}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('admin.categories.destroy', $item->cateid) }}" method="POST"
+                                class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach

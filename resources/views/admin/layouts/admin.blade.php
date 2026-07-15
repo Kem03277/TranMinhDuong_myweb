@@ -8,10 +8,14 @@
     <title>@yield('title', 'My Web')</title>
 
     {{-- CDN Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    {{--
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
 
     {{-- CDN Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    {{-- Sử dụng CSS và JavaScript thông qua Vite--}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
