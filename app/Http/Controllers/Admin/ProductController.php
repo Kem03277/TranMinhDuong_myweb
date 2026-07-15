@@ -20,25 +20,6 @@ class ProductController extends Controller
      */
     public function index($limit = 10)
     {
-        // Query Builder
-        // $list = DB::table('products')
-        //     ->join('categories', 'products.cateid', '=', 'categories.cateid')
-        //     ->leftJoin('brands', 'products.brandid', '=', 'brands.id')
-        //     ->select(
-        //         'products.id',
-        //         'products.productname',
-        //         'products.price',
-        //         'products.pricediscount',
-        //         'products.image',
-        //         'products.status',
-        //         'categories.catename',
-        //         'brands.brandname'
-        //     )
-        //     ->orderBy('products.productname')
-        //     ->get();
-        // return view('admin.products.index', compact('list'));
-
-        // Eloquent ORM
         $list = Product::with([
             'category:cateid,catename',
             'brand:id,brandname'
@@ -54,8 +35,9 @@ class ProductController extends Controller
             )
             ->orderBy('productname')
             ->paginate($limit);
+        $trashCount = Product::onlyTrashed()->count();
 
-        return view('admin.products.index', compact('list'));
+        return view('admin.products.index', compact('list', 'trashCount'));
     }
 
     /**
@@ -214,7 +196,76 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        return "Xoa san pham";
+        try {
+            Product::findOrFail($id)->delete();
+
+            return redirect()
+                ->route('admin.products.index')
+                ->with('success', 'Xóa sản phẩm thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Thực hiện thất bại.');
+        }
+    }
+
+    public function trash($limit = 10)
+    {
+        $list = Product::onlyTrashed()
+            ->select('id', 'productname', 'price', 'image', 'status', 'cateid', 'brandid', 'deleted_at')
+            ->orderBy('deleted_at', 'desc')
+            ->paginate($limit);
+        $trashCount = Product::onlyTrashed()->count();
+
+        return view('admin.products.trash', compact('list', 'trashCount'));
+    }
+
+    public function restore($id)
+    {
+        try {
+            Product::onlyTrashed()->findOrFail($id)->restore();
+
+            return redirect()
+                ->route('admin.products.trash')
+                ->with('success', 'Khôi phục thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục thất bại.');
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            Product::onlyTrashed()->findOrFail($id)->forceDelete();
+
+            return redirect()
+                ->route('admin.products.trash')
+                ->with('success', 'Xóa vĩnh viễn thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa thất bại.');
+        }
+    }
+
+    public function restoreAll()
+    {
+        Product::onlyTrashed()->restore();
+
+        return redirect()
+            ->route('admin.products.trash')
+            ->with('success', 'Khôi phục tất cả thành công.');
+    }
+
+    public function forceDeleteAll()
+    {
+        Product::onlyTrashed()->forceDelete();
+
+        return redirect()
+            ->route('admin.products.trash')
+            ->with('success', 'Xóa vĩnh viễn tất cả thành công.');
     }
 
     public function deleteImage(Request $request, $productId, $imageId)

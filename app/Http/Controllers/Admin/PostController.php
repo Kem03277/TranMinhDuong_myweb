@@ -15,27 +15,13 @@ class PostController extends Controller
      */
     public function index($limit = 10)
     {
-        // Query Builder
-        // $list = DB::table('posts')
-        //     ->join('users', 'posts.user_id', '=', 'users.id')
-        //     ->select(
-        //         'posts.id',
-        //         'posts.title',
-        //         'posts.slug',
-        //         'posts.image',
-        //         'posts.status',
-        //         'users.fullname'
-        //     )
-        //     ->orderBy('posts.title')
-        //     ->get();
-        // return view('admin.posts.index', compact('list'));
-
-        // Eloquent ORM 
         $list = Post::select('id', 'title', 'slug', 'image', 'status', 'user_id')
             ->with('user:id,fullname')
             ->orderBy('title')
             ->paginate($limit);
-        return view('admin.posts.index', compact('list'));
+        $trashCount = Post::onlyTrashed()->count();
+
+        return view('admin.posts.index', compact('list', 'trashCount'));
     }
 
     /**
@@ -127,6 +113,76 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        return "Xoa bai viet";
+        try {
+            Post::findOrFail($id)->delete();
+
+            return redirect()
+                ->route('admin.posts.index')
+                ->with('success', 'Xóa bài viết thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Thực hiện thất bại.');
+        }
+    }
+
+    public function trash($limit = 10)
+    {
+        $list = Post::onlyTrashed()
+            ->select('id', 'title', 'slug', 'image', 'status', 'user_id', 'deleted_at')
+            ->with('user:id,fullname')
+            ->orderBy('deleted_at', 'desc')
+            ->paginate($limit);
+        $trashCount = Post::onlyTrashed()->count();
+
+        return view('admin.posts.trash', compact('list', 'trashCount'));
+    }
+
+    public function restore($id)
+    {
+        try {
+            Post::onlyTrashed()->findOrFail($id)->restore();
+
+            return redirect()
+                ->route('admin.posts.trash')
+                ->with('success', 'Khôi phục thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục thất bại.');
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            Post::onlyTrashed()->findOrFail($id)->forceDelete();
+
+            return redirect()
+                ->route('admin.posts.trash')
+                ->with('success', 'Xóa vĩnh viễn thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa thất bại.');
+        }
+    }
+
+    public function restoreAll()
+    {
+        Post::onlyTrashed()->restore();
+
+        return redirect()
+            ->route('admin.posts.trash')
+            ->with('success', 'Khôi phục tất cả thành công.');
+    }
+
+    public function forceDeleteAll()
+    {
+        Post::onlyTrashed()->forceDelete();
+
+        return redirect()
+            ->route('admin.posts.trash')
+            ->with('success', 'Xóa vĩnh viễn tất cả thành công.');
     }
 }

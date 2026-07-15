@@ -15,19 +15,12 @@ class UserController extends Controller
      */
     public function index($limit = 10)
     {
-        // Query Builder
-        // $list = DB::table('users')
-        //     ->select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status')
-        //     ->where('status', 1)
-        //     ->orderBy('fullname')
-        //     ->get();
-        // return view('admin.users.index', compact('list'));
-
-        // Eloquent ORM
         $list = User::select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status')
             ->orderBy('fullname')
             ->paginate($limit);
-        return view('admin.users.index', compact('list'));
+        $trashCount = User::onlyTrashed()->count();
+
+        return view('admin.users.index', compact('list', 'trashCount'));
     }
 
     /**
@@ -133,6 +126,75 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        return "Xoa nguoi dung";
+        try {
+            User::findOrFail($id)->delete();
+
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'Xóa người dùng thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Thực hiện thất bại.');
+        }
+    }
+
+    public function trash($limit = 10)
+    {
+        $list = User::onlyTrashed()
+            ->select('id', 'fullname', 'username', 'email', 'phone', 'role', 'status', 'deleted_at')
+            ->orderBy('deleted_at', 'desc')
+            ->paginate($limit);
+        $trashCount = User::onlyTrashed()->count();
+
+        return view('admin.users.trash', compact('list', 'trashCount'));
+    }
+
+    public function restore($id)
+    {
+        try {
+            User::onlyTrashed()->findOrFail($id)->restore();
+
+            return redirect()
+                ->route('admin.users.trash')
+                ->with('success', 'Khôi phục thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Khôi phục thất bại.');
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            User::onlyTrashed()->findOrFail($id)->forceDelete();
+
+            return redirect()
+                ->route('admin.users.trash')
+                ->with('success', 'Xóa vĩnh viễn thành công.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Xóa thất bại.');
+        }
+    }
+
+    public function restoreAll()
+    {
+        User::onlyTrashed()->restore();
+
+        return redirect()
+            ->route('admin.users.trash')
+            ->with('success', 'Khôi phục tất cả thành công.');
+    }
+
+    public function forceDeleteAll()
+    {
+        User::onlyTrashed()->forceDelete();
+
+        return redirect()
+            ->route('admin.users.trash')
+            ->with('success', 'Xóa vĩnh viễn tất cả thành công.');
     }
 }

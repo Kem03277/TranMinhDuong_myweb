@@ -4,10 +4,19 @@
 
 @section('content')
     <h2 class="mb-3">DANH SÁCH SẢN PHẨM</h2>
-    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-2">
-        <i class="bi bi-plus-circle"></i>
-        Thêm mới
-    </a>
+    <div class="d-flex gap-2 mb-2">
+        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Thêm mới
+        </a>
+        <a href="{{ route('admin.products.trash') }}" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            Thùng rác
+            @if(!empty($trashCount))
+                <span class="badge bg-light text-danger ms-1">{{ $trashCount }}</span>
+            @endif
+        </a>
+    </div>
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -52,10 +61,14 @@
                         <a href="{{ route('admin.products.edit', $item->id) }}" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a href="{{ route('admin.products.destroy', $item->id) }}"
-                            onclick="return confirm('Bạn có chắc muốn xóa?')" class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash"></i>
-                        </a>
+                        <form action="{{ route('admin.products.destroy', $item->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             @empty

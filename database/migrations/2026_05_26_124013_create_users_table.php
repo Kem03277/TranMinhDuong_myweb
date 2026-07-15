@@ -25,6 +25,7 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->rememberToken(); // Thêm cột remember_token
+            $table->softDeletes();
         });
     }
 

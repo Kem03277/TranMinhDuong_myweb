@@ -23,6 +23,7 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

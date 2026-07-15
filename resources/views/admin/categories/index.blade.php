@@ -6,10 +6,19 @@
 
     <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
 
-    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary mb-2">
-        <i class="bi bi-plus-circle"></i>
-        Thêm mới
-    </a>
+    <div class="d-flex gap-2 mb-2">
+        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Thêm mới
+        </a>
+        <a href="{{ route('admin.categories.trash') }}" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            Thùng rác
+            @if(!empty($trashCount))
+                <span class="badge bg-light text-danger ms-1">{{ $trashCount }}</span>
+            @endif
+        </a>
+    </div>
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
