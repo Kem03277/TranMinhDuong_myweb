@@ -1,11 +1,11 @@
 <div class="card h-100 shadow-sm">
-    <a href="{{ route('show', ['slug' => $product->slug]) }}" class="text-decoration-none text-dark">
+    <a href="{{ route('product.show', ['slug' => $product->slug]) }}" class="text-decoration-none text-dark">
         <img src="{{ $product->image ? asset('storage/products/' . $product->image) : asset('images/default.png') }}"
             class="card-img-top" alt="{{ $product->productname }}" style="height: 220px; object-fit: cover;">
     </a>
     <div class="card-body d-flex flex-column">
         <h5 class="card-title">
-            <a href="{{ route('show', ['slug' => $product->slug]) }}" class="text-decoration-none text-dark">
+            <a href="{{ route('product.show', ['slug' => $product->slug]) }}" class="text-decoration-none text-dark">
                 {{ $product->productname }}
             </a>
         </h5>
@@ -19,8 +19,7 @@
                     {{ number_format($product->price, 0, ',', '.') }} đ
                 </small>
             @endif
-            <button type="button" class="btn btn-success btn-sm w-100 mt-3 add-to-cart-btn"
-                data-product-id="{{ $product->id }}">
+            <button type="button" class="btn btn-success btn-sm w-100 mt-3 add-to-cart-btn">
                 <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ
             </button>
         </div>

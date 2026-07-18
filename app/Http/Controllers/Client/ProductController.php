@@ -10,82 +10,79 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function category($slug)
+    public function category($slug, $limit = 12)
     {
-        $category = Category::where('slug', $slug)->where('status', 1)
-            ->select(
-                'cateid',
-                'catename',
-                'slug'
-            )
-            ->firstOrFail();
-
-        $products = Product::where('cateid', $category->cateid)
-            ->select(
-                'id',
-                'productname',
-                'price',
-                'pricediscount',
-                'image',
-                'status',
-                'slug'
-            )
-            ->where('status', 1)
-            ->orderByDesc('created_at')
-            ->paginate(8);
-
-        return view('client.product.category', compact('category', 'products'));
+        $products = Product::select(
+            'products.id',
+            'products.productname',
+            'products.slug',
+            'products.price',
+            'products.pricediscount',
+            'products.image',
+            'categories.catename'
+        )
+            ->join('categories', 'products.cateid', 'categories.cateid')
+            ->where('categories.slug', $slug)
+            ->where('products.status', 1)
+            ->paginate($limit);
+        return view('client.products.category', compact('products'));
     }
-
-    public function brand($slug)
+    public function brand($slug, $limit = 12)
     {
-        $brand = Brand::where('slug', $slug)->where('status', 1)
-            ->select(
-                'id',
-                'brandname',
-                'slug'
-            )
-            ->firstOrFail();
-
-        $products = Product::where('brandid', $brand->id)
-            ->select(
-                'id',
-                'productname',
-                'price',
-                'pricediscount',
-                'image',
-                'status',
-                'slug'
-            )
-            ->where('status', 1)
-            ->orderByDesc('created_at')
-            ->paginate(8);
-
-        return view('client.product.brand', compact('brand', 'products'));
+        $products = Product::select(
+            'products.id',
+            'products.productname',
+            'products.slug',
+            'products.price',
+            'products.pricediscount',
+            'products.image',
+            'brands.brandname'
+        )
+            ->join('brands', 'products.brandid', 'brands.id')
+            ->where('brands.slug', $slug)
+            ->where('products.status', 1)
+            ->paginate($limit);
+        return view('client.products.brand', compact('products'));
     }
 
 
     public function show($slug)
     {
-        $product = Product::where('slug', $slug)
-            ->where('status', 1)
-            ->with(['category', 'brand'])
-            ->first();
-
-        if (!$product) {
-            abort(404);
-        }
-
-        $relatedProducts = Product::where('status', 1)
-            ->where(function ($query) use ($product) {
-                $query->where('cateid', $product->cateid)
-                    ->orWhere('brandid', $product->brandid);
-            })
-            ->orderByDesc('created_at')
-            ->take(8)
+        $product = Product::select(
+            'id',
+            'cateid',
+            'brandid',
+            'productname',
+            'slug',
+            'price',
+            'pricediscount',
+            'image',
+            'description'
+        )
+            ->with([
+                'category:cateid,catename',
+                'brand:id,brandname',
+                'images:id,product_id,image'
+            ])
+            ->where('slug', $slug)
+            ->firstOrFail();
+        // sản phẩm liên quan cùng danh muc
+        $relatedProducts = Product::select(
+            'id',
+            'productname',
+            'slug',
+            'price',
+            'pricediscount',
+            'image'
+        )
+            ->where('cateid', $product->cateid)
+            ->where('id', '<>', $product->id)
+            ->take(4)
             ->get();
-
-        return view('client.product.show', compact('product', 'relatedProducts'));
+        return view('client.products.show', compact(
+            'product',
+            'relatedProducts'
+        ));
     }
     public function search(Request $request)
     {
@@ -118,12 +115,8 @@ class ProductController extends Controller
 
         $products = $query->orderByDesc('created_at')
             ->paginate(8)
-            ->appends(array_filter([
-                'q' => $keyword ?: null,
-                'price_min' => $priceMin !== '' ? $priceMin : null,
-                'price_max' => $priceMax !== '' ? $priceMax : null,
-            ]));
+            ->withQueryString();
 
-        return view('client.product.search', compact('keyword', 'priceMin', 'priceMax', 'products'));
+        return view('client.products.search', compact('keyword', 'priceMin', 'priceMax', 'products'));
     }
 }

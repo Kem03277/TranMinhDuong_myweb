@@ -10,28 +10,25 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
-use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Client\CartController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('category');
-Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('brand');
-Route::get('/products/{slug}', [ClientProductController::class, 'show'])->name('show');
-
+Route::get('/category/{slug}', [ClientProductController::class, 'category'])->name('products.category');
+Route::get('/brand/{slug}', [ClientProductController::class, 'brand'])->name('products.brand');
+Route::get('/product/{slug}', [ClientProductController::class, 'show'])->name('product.show');
 Route::get('/search', [ClientProductController::class, 'search'])->name('products.search');
 
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('index');
-    Route::post('/add', [CartController::class, 'add'])->name('add');
-    Route::post('/update', [CartController::class, 'update'])->name('update');
-    Route::post('/remove', [CartController::class, 'remove'])->name('remove');
-    Route::post('/clear', [CartController::class, 'clear'])->name('clear');
-    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [CartController::class, 'storeOrder'])->name('store');
+
+Route::prefix('cart')->controller(CartController::class)->name('cart.')->group(function () {
+    Route::get('/show', 'show')->name('show');
+    Route::post('/add/{id}', 'addToCart')->name('add');
+    Route::delete('/remove/{id}', 'removeCart')->name('remove');
+
+    Route::post('/checkout', 'checkout')->name('checkout');
 });
 
 Route::get('/test', function () {
@@ -149,7 +146,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::resource('users', UserController::class);
                 Route::resource('products', ProductController::class);
                 Route::resource('posts', PostController::class);
+
                 Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+                Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+                Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
             }
         );
         Route::resource('products', ProductController::class)

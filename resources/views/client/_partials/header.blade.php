@@ -14,7 +14,7 @@
                     <a href="{{ route('admin.login') }}" class="text-white text-decoration-none me-3">
                         Đăng nhập
                     </a>
-                    <a href="" class="text-white text-decoration-none me-3">
+                    <a href="#" class="text-white text-decoration-none me-3">
                         Đăng ký
                     </a>
                     <a href="#" class="text-white text-decoration-none">

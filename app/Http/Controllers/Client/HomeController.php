@@ -12,16 +12,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('status', 1)
-            ->select('cateid', 'catename', 'slug')
-            ->orderBy('sort_order')
-            ->get();
-
-        $brands = Brand::where('status', 1)
-            ->select('id', 'brandname', 'slug')
-            ->orderBy('sort_order')
-            ->get();
-
         // Sản phẩm mới nhất (lấy 8 sản phẩm mới nhất)
         $newProducts = Product::where('status', 1)
             ->select(
@@ -31,12 +21,11 @@ class HomeController extends Controller
                 'pricediscount',
                 'image',
                 'status',
-                'slug'
+                'slug',
             )
             ->orderByDesc('created_at')
             ->take(8)
             ->get();
-
         // Sản phẩm giảm giá (lấy 8 sản phẩm mới nhất)
         $saleProducts = Product::where('status', 1)
             ->select(
@@ -46,18 +35,15 @@ class HomeController extends Controller
                 'pricediscount',
                 'image',
                 'status',
-                'slug'
+                'slug',
             )
             ->where('pricediscount', '>', 0)
             ->orderByDesc('created_at')
             ->take(8)
             ->get();
-
         return view('client.home', compact(
             'newProducts',
-            'saleProducts',
-            'categories',
-            'brands'
+            'saleProducts'
         ));
     }
 }

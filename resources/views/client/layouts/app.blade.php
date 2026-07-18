@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'My Web')</title>
     {{-- Vite --}}
-    @vite(['resources/css/client.css', 'resources/js/client.js'])
+    @vite(['resources/css/client.css', 'resources/js/client.js', 'resources/js/cart.js'])
 </head>
 
 <body>

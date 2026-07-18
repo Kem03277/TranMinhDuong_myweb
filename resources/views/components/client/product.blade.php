@@ -1,7 +1,7 @@
 <div class="card h-100 shadow-sm">
     {{-- Hình ảnh --}}
-    <img src="{{ asset($product->image) }}" class="card-img-top" alt="{{
-    $product->productname }}" style="height:150px;object-fit:cover;">
+    <img src="{{ asset('storage/products/' . $product->image) }}" class="card-img-top" alt="{{ $product->productname }}"
+        style="height:150px;object-fit:cover;">
     <div class="card-body d-flex flex-column">
         {{-- Tên sản phẩm --}}
         <h6 class="card-title">
@@ -26,15 +26,15 @@
         <div class="mt-auto">
             <div class="row g-2">
                 <div class="col-6">
-                    <a href="{{ route('show', ['slug' => $product->slug]) }}" class="btn btn-primary w-100">
+                    <a href="{{ route('product.show', ['slug' => $product->slug]) }}" class="btn btn-primary w-100">
                         <i class="bi bi-eye"></i>
                     </a>
                 </div>
                 <div class="col-6">
-                    <button type="button" class="btn btn-success w-100 add-to-cart-btn"
-                        data-product-id="{{ $product->id }}">
-                        <i class="bi bi-cart-plus"></i>
-                    </button>
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="form-add-cart">
+                        @csrf
+                        <button type="submit" class="btn btn-success w-100"><i class="bi bi-cart-plus"></i></button>
+                    </form>
                 </div>
             </div>
         </div>

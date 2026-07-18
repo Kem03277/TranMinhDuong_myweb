@@ -26,7 +26,6 @@
                     </li>
                     <li>
                         <a href="#" class="text-white text-decoration-none">
-                            Giỏ hàng
                         </a>
                     </li>
                     <li>

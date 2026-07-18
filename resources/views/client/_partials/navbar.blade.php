@@ -23,7 +23,7 @@
                     <ul class="dropdown-menu">
                         @foreach ($categories as $item)
                             <li>
-                                <a class="dropdown-item" href="{{ route('category', ['slug' => $item->slug]) }}">
+                                <a class="dropdown-item" href="{{ route('products.category', ['slug' => $item->slug]) }}">
                                     {{ $item->catename }}
                                 </a>
                             </li>
@@ -47,7 +47,7 @@
                     <ul class="dropdown-menu">
                         @foreach ($brands as $item)
                             <li>
-                                <a class="dropdown-item" href="{{ route('brand', ['slug' => $item->slug]) }}">
+                                <a class="dropdown-item" href="{{ route('products.brand', ['slug' => $item->slug]) }}">
                                     {{ $item->brandname }}
                                 </a>
                             </li>
@@ -75,8 +75,12 @@
                 </button>
             </form>
             {{-- Giỏ hàng --}}
-            <a href="{{ route('cart.index') }}" class="btn btn-outline-success">
-                Giỏ hàng (<span id="cart-count">{{ collect(session('cart', []))->sum('quantity') }}</span>)
+            <a href="{{ route('cart.show') }}" class="btn btn-outline-success">
+                🛒Giỏ hàng (
+                <span class="badge bg-warning text-dark" id="cart-count">
+                    {{ count(session('cart', [])) }}
+                </span>
+                )
             </a>
         </div>
     </div>
